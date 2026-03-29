@@ -30,7 +30,6 @@ export default function App() {
         ListHeaderComponent={() => (
           <>
             <View className="home-header">
-              ,
               <View className="home-user">
                 <Image source={images.avatar} className="home-avatar" />
                 <Text className="home-user-name">{HOME_USER.name}</Text>
