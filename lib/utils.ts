@@ -1,15 +1,36 @@
 import dayjs from "dayjs";
 
-export const formatCurrency = (value: number, currency = "USD"): string => {
+export const formatCurrency = (value: number, currency = "INR"): string => {
   try {
-    return new Intl.NumberFormat("en-US", {
+    const isINR = currency === "INR";
+    const locale = isINR ? "en-IN" : "en-US";
+
+    let minFraction = 2;
+    let maxFraction = 2;
+
+    if (isINR) {
+      const decimalPart = value % 1;
+
+      if (decimalPart === 0) {
+        minFraction = 0;
+        maxFraction = 0;
+      } else if (Number(decimalPart.toFixed(1)) === decimalPart) {
+        minFraction = 1;
+        maxFraction = 1;
+      } else {
+        minFraction = 2;
+        maxFraction = 2;
+      }
+    }
+
+    return new Intl.NumberFormat(locale, {
       style: "currency",
       currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      minimumFractionDigits: minFraction,
+      maximumFractionDigits: maxFraction,
     }).format(value);
   } catch {
-    return value.toFixed(2);
+    return value.toFixed(currency === "INR" ? 1 : 2);
   }
 };
 
