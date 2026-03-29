@@ -40,8 +40,8 @@ const SubscriptionCard = ({
 
         const dynamicBackground =
           !expanded && color
-            ? { backgroundColor: color } // 🎨 YOUR COLOR
-            : { backgroundColor: "#1C1C1E" }; // 🧱 DEFAULT CARD
+            ? { backgroundColor: color }
+            : { backgroundColor: "#1C1C1E" };
 
         const pressedStyle = pressed ? { opacity: 0.9 } : {};
 
@@ -49,7 +49,6 @@ const SubscriptionCard = ({
       }}
       className={clsx(expanded && "sub-card-expanded")}
     >
-      {/* 🔹 HEADER */}
       <View className="sub-head">
         <View className="sub-main">
           <Image source={icon} className="sub-icon" />
@@ -73,7 +72,6 @@ const SubscriptionCard = ({
         </View>
       </View>
 
-      {/* 🔹 EXPANDED BODY */}
       {expanded && (
         <View className="sub-body">
           <DetailRow label="Payment" value={paymentMethod} />
@@ -98,7 +96,6 @@ const SubscriptionCard = ({
 
 export default SubscriptionCard;
 
-// 🔥 CLEAN REUSABLE ROW
 const DetailRow = ({ label, value }: { label: string; value?: string }) => {
   if (!value) return null;
 
