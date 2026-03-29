@@ -23,24 +23,47 @@ const SubscriptionCard = ({
   startDate,
   status,
 }: SubscriptionCardProps) => {
+  const subtitle =
+    category?.trim() ||
+    plan?.trim() ||
+    (renewalDate ? formatSubscriptionDateTime(renewalDate) : "");
+
   return (
     <Pressable
       onPress={onPress}
-      style={!expanded && color ? { backgroundColor: color } : {}}
-      className={clsx("sub-card", expanded ? "sub-card-expanded" : "bg-card")}
+      android_ripple={{ color: "#00000010" }}
+      style={({ pressed }) => {
+        const baseStyle = {
+          borderRadius: 20,
+          padding: 16,
+        };
+
+        const dynamicBackground =
+          !expanded && color
+            ? { backgroundColor: color } // 🎨 YOUR COLOR
+            : { backgroundColor: "#1C1C1E" }; // 🧱 DEFAULT CARD
+
+        const pressedStyle = pressed ? { opacity: 0.9 } : {};
+
+        return [baseStyle, dynamicBackground, pressedStyle];
+      }}
+      className={clsx(expanded && "sub-card-expanded")}
     >
+      {/* 🔹 HEADER */}
       <View className="sub-head">
         <View className="sub-main">
           <Image source={icon} className="sub-icon" />
+
           <View className="sub-copy">
             <Text numberOfLines={1} className="sub-title">
               {name}
-              <Text ellipsizeMode="tail" className="sub-meta" numberOfLines={1}>
-                {category?.trim() || plan?.trim() || renewalDate
-                  ? formatSubscriptionDateTime(renewalDate)
-                  : ""}
-              </Text>
             </Text>
+
+            {!!subtitle && (
+              <Text numberOfLines={1} className="sub-meta">
+                {subtitle}
+              </Text>
+            )}
           </View>
         </View>
 
@@ -50,71 +73,23 @@ const SubscriptionCard = ({
         </View>
       </View>
 
+      {/* 🔹 EXPANDED BODY */}
       {expanded && (
         <View className="sub-body">
-          <View className="sub-details">
-            <View className="sub-row">
-              <View className="sub-row-copy">
-                <Text className="sub-label">Payment:</Text>
-                <Text
-                  className="sub-value"
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {paymentMethod?.trim()}
-                </Text>
-              </View>
-            </View>
-
-            <View className="sub-row">
-              <View className="sub-row-copy">
-                <Text className="sub-label">Category:</Text>
-                <Text
-                  className="sub-value"
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {category?.trim() || plan?.trim()}
-                </Text>
-              </View>
-            </View>
-            <View className="sub-row">
-              <View className="sub-row-copy">
-                <Text className="sub-label">Started:</Text>
-                <Text
-                  className="sub-value"
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {startDate ? formatSubscriptionDateTime(startDate) : ""}
-                </Text>
-              </View>
-            </View>
-            <View className="sub-row">
-              <View className="sub-row-copy">
-                <Text className="sub-label">Renewal Date:</Text>
-                <Text
-                  className="sub-value"
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {renewalDate ? formatSubscriptionDateTime(renewalDate) : ""}
-                </Text>
-              </View>
-            </View>
-            <View className="sub-row">
-              <View className="sub-row-copy">
-                <Text className="sub-label">Status:</Text>
-                <Text
-                  className="sub-value"
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {status ? formatStatusLabel(status) : ""}
-                </Text>
-              </View>
-            </View>
-          </View>
+          <DetailRow label="Payment" value={paymentMethod} />
+          <DetailRow label="Category" value={category || plan} />
+          <DetailRow
+            label="Started"
+            value={startDate ? formatSubscriptionDateTime(startDate) : ""}
+          />
+          <DetailRow
+            label="Renewal"
+            value={renewalDate ? formatSubscriptionDateTime(renewalDate) : ""}
+          />
+          <DetailRow
+            label="Status"
+            value={status ? formatStatusLabel(status) : ""}
+          />
         </View>
       )}
     </Pressable>
@@ -122,3 +97,19 @@ const SubscriptionCard = ({
 };
 
 export default SubscriptionCard;
+
+// 🔥 CLEAN REUSABLE ROW
+const DetailRow = ({ label, value }: { label: string; value?: string }) => {
+  if (!value) return null;
+
+  return (
+    <View className="sub-row">
+      <View className="sub-row-copy">
+        <Text className="sub-label">{label}:</Text>
+        <Text numberOfLines={1} className="sub-value">
+          {value.trim()}
+        </Text>
+      </View>
+    </View>
+  );
+};

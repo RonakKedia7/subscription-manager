@@ -147,7 +147,7 @@
   }
 
   .sub-card-expanded {
-    @apply bg-subscription;
+    @apply bg-subscription p-4 rounded-2xl;
   }
 
   .sub-head {
